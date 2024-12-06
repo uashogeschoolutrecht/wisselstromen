@@ -1,0 +1,106 @@
+---
+title: "Demo Wisselstroom"
+author: "Martine Jansen"
+format:
+  html:
+    toc: true
+    toc-title: "Inhoud"
+    toc-depth: 2
+    toc-expand: true
+    toc-location: left
+    embed-resources: true
+---
+
+# Installeren en klaarzetten
+
+## Installeren
+
+```{r}
+# Dit hoeft maar 1 keer, voordat je dit document gaat renderen.
+# daarna kun je met een # voor de regel er een commentaarregel van maken
+# devtools::install_github("ed2c/wisselstroom", dependencies = TRUE, build_vignettes = TRUE)
+
+```
+
+## Klaarzetten
+
+```{r}
+library(wisselstroom)
+```
+
+
+# Data inlezen
+
+```{r}
+# Load HU data file
+
+# First get the username from the environment, and set the path to the HU file
+username <- Sys.getenv("USERNAME")
+path_to_examplefile <- paste0('C:/Users/', username, '/Stichting Hogeschool Utrecht/FCA-DA-P - Analytics/Studentstromen bekostigingsbestand/data/DEFBEK_2025_20240522_25DW.csv')
+
+mijn_data <- read_bek_data(path_to_examplefile)
+```
+
+De eerste 5 regels van het bestand bekijken:
+
+```{r}
+mijn_data |> head(n = 5)
+```
+
+# flow_basics
+
+
+```{r}
+mijn_basics <- make_flow_basics(mijn_data)
+```
+
+Het object `VLP_example`mijn_basics` bestaat uit een aantal onderdelen.  
+
+Een kort overzicht met `summary()`:
+
+```{r}
+summary(mijn_basics)
+```
+Een uitgebreider overzicht met `str()`:
+
+```{r}
+str(mijn_basics)
+```
+In de volgende paragrafen bekijken we de losse onderdelen: 
+
+## enrolments
+
+Bekijk de eerste 5 regels van enrolments
+
+```{r}
+mijn_basics$enrolments |> head(n = 5)
+```
+
+## degrees
+
+Bekijk de eerste 5 regels van degrees
+
+```{r}
+mijn_basics$degrees |> head(n = 5)
+```
+
+# flow_insights
+
+
+```{r}
+mijn_insights <- make_flow_insights(mijn_basics)
+```
+
+Het object `mijn_insights` bestaat uit een aantal onderdelen.  
+
+Een kort overzicht met `summary()`:
+
+```{r}
+summary(mijn_insights)
+```
+Een uitgebreider overzicht met `str()`:
+
+```{r}
+str(mijn_insights)
+```
+
