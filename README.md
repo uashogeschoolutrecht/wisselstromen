@@ -4,7 +4,7 @@ Project gestart vanuit de DDHU community voor Data Analyse, met als doel om Pyth
 Carlijn van Heuveln, Gerwin Hendriks, Harald Breshamer en Fraukje Coopmans. 
 
 ## Doel van dit project 
-Het aantal in- en uitgaande studenten bij de HU bepalen op basis van het DUO bekostigingsbestand, en dit in Python We zijn geinspireerd door het R package `wisselstroom` (https://github.com/ed2c/wisselstroom) ontwikkeld door Fontys waarmee uit het DUO bekostigingsbestand inzichten rondom de studenten wisselstromen gegenereerd kunnen worden. 
+We zijn geinspireerd geraakt door het R package `wisselstroom` (https://github.com/ed2c/wisselstroom) ontwikkeld door Fontys waarmee uit het DUO bekostigingsbestand inzichten rondom de studenten wisselstromen gegenereerd kunnen worden. In dit project zouden we graag het aantal in- en uitgaande studenten (wisselstromen) bij de HU bepalen op basis van het DUO bekostigingsbestand, en dit in Python. 
 
 ## Project stappen
 De volgende stappen hebben wij uitgevoerd:
