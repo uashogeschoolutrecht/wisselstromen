@@ -1,0 +1,137 @@
+---
+title: "Demo kort"
+author: "Martine Jansen"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-title: "Inhoud"
+    toc-depth: 2
+    toc-expand: true
+    toc-location: left
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r, eval = FALSE}
+# Dit hoeft maar 1 keer, voordat je dit document gaat renderen.
+# daarna kun je met een # voor de regel er een commentaarregel van maken
+# devtools::install_github("ed2c/wisselstroom", dependencies = TRUE, build_vignettes = TRUE)
+```
+
+
+
+```{r setup}
+# packages die gebruikt woden:
+# wisselstroom, here, dplyr, tidyr, ggplot2
+
+# libraries
+library(wisselstroom)
+library(ggplot2)
+```
+
+```{r inlezen}
+# Load HU data file
+
+# First get the username from the environment, and set the path to the HU file
+username <- Sys.getenv("USERNAME")
+path_to_examplefile <- paste0('C:/Users/', username, '/Stichting Hogeschool Utrecht/FCA-DA-P - Analytics/Studentstromen bekostigingsbestand/data/DEFBEK_2025_20240522_25DW.csv')
+
+mijn_data <- read_bek_data(path_to_examplefile)
+mijn_basics <- make_flow_basics(mijn_data)
+mijn_insights <- make_flow_insights(mijn_basics)
+```
+
+```{r}
+# variabelen voor zin 1
+brin_own <- mijn_basics$brin_own
+date_retrieval <- mijn_basics$date_retrieval
+
+# vaiabelen voor zin 2
+n_enrol <- nrow(mijn_basics$enrolments)
+n_degree <- nrow(mijn_basics$degrees)
+n_students <- unique(c(unique(mijn_basics$enrolments$student_id),
+                       unique(mijn_basics$degrees$student_id))
+                     ) |> length()
+
+min_acyear <- min(mijn_basics$enrolments$academic_year)
+max_acyear <- max(mijn_basics$enrolments$academic_year)
+
+```
+
+
+# Inleiding
+
+Dit is een korte demonstratie van het gebruik van het `wisselstroom` package.   
+
+Dit document geeft een korte analyse gericht op wisselstroom, van het voorlopige bekostigingsbestand van `r brin_own`, standdatum `r date_retrieval`.  
+Het bestand bevat `r n_enrol` inschrijvingsregels en `r n_degree` diplomaregels van `r n_students` studenten die in ieder geval in een van de twee beschreven academische jaren (`r min_acyear` en `r max_acyear` ) een inschrijving of een diploma hadden bij `r brin_own`.  
+
+# Verdeling over de BRINS
+
+Studenten kunnen in beide jaren bij `r brin_own` ingeschreven staan, of in 1 van de twee. Daarnaast kunnen ze ook inschrijvingen hebben bij andere BRINs of niet in het hoger onderwijs ingeschreven zijn.  
+Een overzicht in tabelvorm: 
+
+```{r}
+mijn_insights$summary_situations_brin |>
+  gt::gt()
+```
+
+
+
+In een grafiek:  
+
+```{r}
+brin_plot <- plot_brinflows(mijn_insights,
+               label_brin_own = "deze HOI",
+               label_other_he = "andere HOI",
+               label_outside_he = "niet in HO",
+               alpha = 0.8)
+# direct plotten in een html bleek een uitdaging
+# vandaar de omweg mt opslaan en als afbeelding invoegen
+ggsave(file = here::here("afbeeldingen", "brin_plot.png"),
+       plot = brin_plot,
+       width = 9,
+       height = 4)
+```
+
+![](afbeeldingen/brin_plot.png)
+
+# Switch
+
+Als een inschrijving eindigt zonder einddiploma, en de student begint het volgende academische jaar aan een andere opleiding, dan noemen we dat een switch.
+
+Aantal switches van `r min_acyear` naar `r max_acyear` is te zien in de volgende tabel: 
+
+```{r}
+mijn_insights$switches |> gt::gt()
+```
+
+We kunnen ook alleen kijken naar switches van onze eigen instelling:
+
+```{r}
+mijn_insights$switches |>
+  dplyr::filter(from_brin == mijn_insights$brin_own) |>
+gt::gt()
+```
+
+
+
+
+
+# Na behalen diploma "31009"
+
+```{r}
+after_degree_31009 <- after_degree(program_of_interest = "31009",
+                                   my_flow_insight = mijn_insights,
+                                   prop_exam = FALSE)
+vervolg <- after_degree_31009$from_to_single
+```
+
+Er zijn `r after_degree_31009$n_students` studenten die in het academische jaar `r after_degree_31009$academic_year_from` het diploma hebben gehaald. Daarvan waren er `r after_degree_31009$n_students_enrolment_type_single` met hooguit 1 inschrijving brin/croho per jaar. Voor deze laatste groep staat in onderstaande tabel het vervolg aangegeven: 
+
+```{r}
+vervolg |> gt::gt()
+```
