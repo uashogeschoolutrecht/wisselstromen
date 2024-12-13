@@ -1,4 +1,4 @@
-def load_and_group_data(folder, file, sep='|'):
+def load_and_group_data(folder, file, headers, sep='|'):
     """
     Loads a CSV file, groups rows by the first column (recordsoort),
     and stores each group as a DataFrame in a dictionary.
@@ -6,6 +6,7 @@ def load_and_group_data(folder, file, sep='|'):
     Args:
         folder (str): The folder containing the file.
         file (str): The name of the file.
+        headers (list): Dictonary containing headers for each recordsoort.
         sep (str): The separator used in the CSV file (default is '|').
         
     Returns:
@@ -16,20 +17,6 @@ def load_and_group_data(folder, file, sep='|'):
     import pandas as pd
 
     path = os.path.join(folder, file)
-
-    # Step 1: Create a dictionary with the header names per recordsoort
-    input_folder = 'headers' # Directory containing the CSV files with the headers
-
-    columns_to_sum = {}
-
-    for filename in os.listdir(input_folder):
-        if filename.endswith('.csv'):
-            file_path = os.path.join(input_folder, filename)
-            
-            df = pd.read_csv(file_path)
-
-            recordsoort = filename.replace('.csv', '') # Get the recordsoort from the file name (without the .csv extension)
-            columns_to_sum[recordsoort] = df.columns.tolist()
 
     # Step 2: Open file bekostigingsbestand and make a list of all the unique recordsoorten
     recordsoorten = set()
@@ -53,10 +40,10 @@ def load_and_group_data(folder, file, sep='|'):
     for recordsoort, rows in df_dict.items():
         df_dict[recordsoort] = pd.DataFrame(rows)
 
-    # Step 6: Assign headers from step 1 to each dataframe
+    # Step 6: Assign headers from to each dataframe
     for recordsoort, df in df_dict.items():
-        if recordsoort in columns_to_sum:
-            columns = columns_to_sum[recordsoort]
+        if recordsoort in headers:
+            columns = headers[recordsoort]
             max_columns = len(columns)
             
             # Adjust the DataFrame to match the expected number of columns
