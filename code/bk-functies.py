@@ -12,6 +12,9 @@ def load_and_group_data(folder, file, sep='|'):
         dict: A dictionary where keys are the recordsoort from the first column, 
               and values are DataFrames containing the rows for each recordsoort.
     """
+    import os
+    import pandas as pd
+
     path = os.path.join(folder, file)
 
     # Step 1: Create a dictionary with the header names per recordsoort
