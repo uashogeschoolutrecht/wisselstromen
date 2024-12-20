@@ -13,6 +13,12 @@ def load_and_group_data(folder, file, headers, sep='|'):
         dict: A dictionary where keys are the recordsoort from the first column, 
               and values are DataFrames containing the rows for each recordsoort.
     """
+
+# Notitie Fraukje: deze functie is nog steeds matig leesbaar 
+# doordat hij erg generiek is in benamingen. Daarnaast vind ik de stappen ook nog niet
+# heel intuitief (waarom niet gewoon eerst het bestand eenmalig inladen en dan stappen
+# uitvoeren?)
+
     import os
     import pandas as pd
 
